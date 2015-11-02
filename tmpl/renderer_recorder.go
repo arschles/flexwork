@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-// Render is the result of a call to RenderRecorder's Render func
-type Render struct {
+// Rendered is the result of a call to RenderRecorder's Render func
+type Rendered struct {
 	Code int
 	Data interface{}
 }
@@ -17,12 +17,12 @@ type RenderRecorder struct {
 	m sync.RWMutex
 	// Outputs stores the templates that have been rendered along with details on
 	// each render
-	renders map[string][]*Render
+	renders map[string][]*Rendered
 }
 
 // NewRenderRecorder creates a new, empty RenderRecorder
 func NewRenderRecorder() *RenderRecorder {
-	return &RenderRecorder{m: sync.RWMutex{}, renders: make(map[string][]*Render)}
+	return &RenderRecorder{m: sync.RWMutex{}, renders: make(map[string][]*Rendered)}
 }
 
 // Render is the interface implementation. Note that this func will call w.WriteHeader(code)
@@ -33,9 +33,9 @@ func (t *RenderRecorder) Render(w http.ResponseWriter, code int, name string, da
 	defer t.m.Unlock()
 	rndrs, ok := t.renders[name]
 	if !ok {
-		rndrs = []*Render{}
+		rndrs = []*Rendered{}
 	}
-	rndrs = append(rndrs, &Render{Code: code, Data: data})
+	rndrs = append(rndrs, &Rendered{Code: code, Data: data})
 	t.renders[name] = rndrs
 	w.WriteHeader(code)
 	w.Write([]byte("would have rendered template" + name))
@@ -43,7 +43,7 @@ func (t *RenderRecorder) Render(w http.ResponseWriter, code int, name string, da
 
 // GetRenders returns all of the renders that have been made for the given
 // template name. returns an empty slice if none have ever been made
-func (t *RenderRecorder) GetRenders(name string) []*Render {
+func (t *RenderRecorder) GetRenders(name string) []*Rendered {
 	t.m.RLock()
 	defer t.m.RUnlock()
 	return t.renders[name]
@@ -51,8 +51,8 @@ func (t *RenderRecorder) GetRenders(name string) []*Render {
 
 // GetAllRenders returns all of the renders for each template name made
 // to date.
-func (t *RenderRecorder) GetAllRenders() map[string][]*Render {
+func (t *RenderRecorder) GetAllRenders() map[string][]*Rendered {
 	t.m.RLock()
-	defer r.m.RUnlock()
+	defer t.m.RUnlock()
 	return t.renders
 }

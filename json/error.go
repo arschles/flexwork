@@ -1,6 +1,10 @@
 package json
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/arschles/flexwork"
+)
 
 type Err error
 
@@ -29,7 +33,8 @@ type ErrorJSON struct {
 	Message string `json:"msg"`
 }
 
+// Error returns a flexwork.Response that encodes a JSON error response
 func Error(code int, eType Err, msg string) flexwork.Response {
 	err := ErrorJSON{Type: eType.Error(), Message: msg}
-	return JSON(code, err)
+	return Encode(code, err)
 }
