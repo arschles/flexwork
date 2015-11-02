@@ -6,7 +6,6 @@ import "net/http"
 // it is intended to hold all data necessary to respond to an HTTP request
 type Response interface {
 	Finish(w http.ResponseWriter)
-	Headers() http.Header
 }
 
 type funcResp struct {
@@ -14,29 +13,11 @@ type funcResp struct {
 	headers http.Header
 }
 
-// ResponseFunc is a convenience wrapper for a func representation of a Resonse.
-// It's the analog for net/http's HandlerFunc
-func ResponseFunc(f func(w http.ResponseWriter)) Response {
-	return &funcResp{
-		handler: f,
-		headers: http.Header(map[string][]string{}),
-	}
-}
+// ResponseFunc is a convenience wrapper for the Response interface
+type ResponseFunc func(w http.ResponseWriter)
 
-// Headers is the interface implementation
-func (r *funcResp) Headers() http.Header {
-	return r.headers
-}
-
-// Finish is the interface implementation
-func (r *funcResp) Finish(w http.ResponseWriter) {
-	// TODO: more efficient way to do this
-	for name, vals := range r.headers {
-		for _, val := range vals {
-			w.Header().Add(name, val)
-		}
-	}
-	r.handler(w)
+func (r ResponseFunc) Finish(w http.ResponseWriter) {
+	r(w)
 }
 
 // Error returns a Response that wraps http.Error
