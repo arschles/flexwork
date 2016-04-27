@@ -16,6 +16,10 @@ type Files struct {
 
 type filesMapKey string
 
+func (f filesMapKey) String() string {
+	return string(f)
+}
+
 // NewFiles creates a new Files struct from the given filenames
 func NewFiles(files ...string) *Files {
 	return &Files{
