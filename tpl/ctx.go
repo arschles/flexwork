@@ -1,11 +1,8 @@
 package tpl
 
-import (
-	"io"
-)
-
-// Executor is an interface for any template that can render itself with the
-// given data (second param) and write the results to the given writer
-type Executor interface {
-	Execute(io.Writer, interface{}) error
+// Context is a group of template files that all live under a directory
+type Context interface {
+	// Prepare renders all of the given Files for execution. Some
+	// implementations may return a cached executor for the given Files
+	Prepare(Files) (Executor, error)
 }
