@@ -15,11 +15,11 @@ type nonCachingContext struct {
 	baseDir string
 }
 
-func (c nonCachingContext) Prepare(tplFiles Files) (Executor, error) {
+func (c nonCachingContext) Prepare(tplFiles Files) (*template.Template, error) {
 	absPaths := tplFiles.absPaths(c.baseDir)
-	ex, err := template.ParseFiles(absPaths...)
+	ret, err := template.ParseFiles(absPaths...)
 	if err != nil {
 		return nil, err
 	}
-	return ex, nil
+	return ret, nil
 }
