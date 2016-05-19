@@ -23,7 +23,7 @@ type cachingContext struct {
 	cache map[filesMapKey]*template.Template
 }
 
-func (c *cachingContext) Prepare(tplFiles Files) (Executor, error) {
+func (c *cachingContext) Prepare(tplFiles Files) (*template.Template, error) {
 	c.mut.Lock()
 	defer c.mut.Unlock()
 	mk := tplFiles.mapKey()
