@@ -10,6 +10,7 @@ import (
 // be rendered, and the remaining ones should be supporting templates like
 // block definitions
 type Files struct {
+	first     string
 	list      []string
 	mapKeyStr string
 }
@@ -21,11 +22,17 @@ func (f filesMapKey) String() string {
 }
 
 // NewFiles creates a new Files struct from the given filenames
-func NewFiles(files ...string) Files {
+func NewFiles(file string, files ...string) Files {
 	return Files{
+		first:     file,
 		list:      files,
 		mapKeyStr: strings.Join(files, ","),
 	}
+}
+
+// First returns the first file listed in f
+func (f Files) First() string {
+	return f.first
 }
 
 func (f Files) len() int {
