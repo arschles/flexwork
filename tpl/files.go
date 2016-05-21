@@ -40,9 +40,10 @@ func (f Files) len() int {
 }
 
 func (f Files) absPaths(absPath string) []string {
-	ret := make([]string, f.len())
+	ret := make([]string, f.len()+1)
+	ret[0] = f.first
 	for i, fileName := range f.list {
-		ret[i] = filepath.Join(absPath, fileName)
+		ret[i+1] = filepath.Join(absPath, fileName)
 	}
 	return ret
 }
