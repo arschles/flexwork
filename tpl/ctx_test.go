@@ -1,6 +1,7 @@
 package tpl
 
 import (
+	"html/template"
 	"os"
 	"path/filepath"
 	"sync"
@@ -8,6 +9,17 @@ import (
 
 const (
 	numConcurrent = 10
+)
+
+var (
+	funcs = template.FuncMap(map[string]interface{}{
+		"pluralize": func(i int, singular, plural string) string {
+			if i == 1 {
+				return singular
+			}
+			return plural
+		},
+	})
 )
 
 func getBaseDir() string {
