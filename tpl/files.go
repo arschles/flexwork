@@ -36,14 +36,16 @@ func (f Files) First() string {
 }
 
 func (f Files) len() int {
-	return len(f.list)
+	return len(f.list) + 1
 }
 
 func (f Files) absPaths(absPath string) []string {
-	ret := make([]string, f.len()+1)
-	ret[0] = f.first
-	for i, fileName := range f.list {
-		ret[i+1] = filepath.Join(absPath, fileName)
+	var allList []string
+	allList = append(allList, f.first)
+	allList = append(allList, f.list...)
+	ret := make([]string, len(allList))
+	for i, fileName := range allList {
+		ret[i] = filepath.Join(absPath, fileName)
 	}
 	return ret
 }
